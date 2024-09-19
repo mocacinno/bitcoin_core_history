@@ -1,0 +1,1 @@
+In the branches of these repo's, you'll find historic bitcoin core versions directly from sourceforge... Having them in github makes it easyer to create diffs and download tarballs of the code (sourceforge doesn't have direct links that keep working.... If you create a tarball of the source, it'll be deleted after a couple days/hours???)
