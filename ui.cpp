@@ -922,7 +922,7 @@ void CMainFrame::RefreshStatusColumn()
 
         for (int nIndex = nStart; nIndex < min(nEnd, m_listCtrl->GetItemCount()); nIndex++)
         {
-            uint256 hash((string)GetItemText(m_listCtrl, nIndex, 1));
+            uint256 hash(std::string(GetItemText(m_listCtrl, nIndex, 1).mb_str()));
             map<uint256, CWalletTx>::iterator mi = mapWallet.find(hash);
             if (mi == mapWallet.end())
             {
@@ -936,7 +936,7 @@ void CMainFrame::RefreshStatusColumn()
                     m_listCtrl->DeleteItem(nIndex--);
             }
             else
-                m_listCtrl->SetItem(nIndex, 2, FormatTxStatus(wtx));
+                m_listCtrl->SetItem(nIndex, 2, wxString(FormatTxStatus(wtx).c_str(), wxConvUTF8));
         }
     }
 }
@@ -1020,7 +1020,7 @@ void CMainFrame::OnPaintListCtrl(wxPaintEvent& event)
             {
                 string strTop;
                 if (m_listCtrl->GetItemCount())
-                    strTop = (string)m_listCtrl->GetItemText(0);
+                    strTop = std::string(m_listCtrl->GetItemText(0).mb_str());
                 foreach(uint256 hash, vWalletUpdated)
                 {
                     map<uint256, CWalletTx>::iterator mi = mapWallet.find(hash);
@@ -1028,7 +1028,7 @@ void CMainFrame::OnPaintListCtrl(wxPaintEvent& event)
                         InsertTransaction((*mi).second, false);
                 }
                 vWalletUpdated.clear();
-                if (m_listCtrl->GetItemCount() && strTop != (string)m_listCtrl->GetItemText(0))
+                if (m_listCtrl->GetItemCount() && strTop != std::string(m_listCtrl->GetItemText(0).mb_str()))
                     m_listCtrl->ScrollList(0, INT_MIN/2);
             }
         }
@@ -1037,7 +1037,7 @@ void CMainFrame::OnPaintListCtrl(wxPaintEvent& event)
         TRY_CRITICAL_BLOCK(cs_mapWallet)
         {
             fPaintedBalance = true;
-            m_staticTextBalance->SetLabel(FormatMoney(GetBalance()) + "  ");
+            m_staticTextBalance->SetLabel(wxString::FromUTF8((FormatMoney(GetBalance()) + "  ").c_str()));
 
             // Count hidden and multi-line transactions
             nTransactionCount = 0;
@@ -1060,13 +1060,13 @@ void CMainFrame::OnPaintListCtrl(wxPaintEvent& event)
         strGen = "    Generating";
     if (fGenerateBitcoins && vNodes.empty())
         strGen = "(not connected)";
-    m_statusBar->SetStatusText(strGen, 1);
+    m_statusBar->SetStatusText(wxString(strGen.c_str(), wxConvUTF8), 1);
 
     string strStatus = strprintf("     %d connections     %d blocks     %d transactions", vNodes.size(), nBestHeight + 1, nTransactionCount);
-    m_statusBar->SetStatusText(strStatus, 2);
+    m_statusBar->SetStatusText(wxString(strStatus.c_str(), wxConvUTF8),2);
 
     if (fDebug && GetTime() - nThreadSocketHandlerHeartbeat > 60)
-        m_statusBar->SetStatusText("     ERROR: ThreadSocketHandler has stopped", 0);
+        m_statusBar->SetStatusText(wxString("     ERROR: ThreadSocketHandler has stopped", wxConvUTF8), 0);
 
     // Pass through to listctrl to actually do the paint, we're just hooking the message
     m_listCtrl->Disconnect(wxEVT_PAINT, (wxObjectEventFunction)NULL, NULL, this);
@@ -1158,7 +1158,7 @@ void CMainFrame::OnButtonSend(wxCommandEvent& event)
 void CMainFrame::OnButtonAddressBook(wxCommandEvent& event)
 {
     // Toolbar: Address Book
-    CAddressBookDialog dialogAddr(this, "", false);
+    CAddressBookDialog dialogAddr(this, wxString(), false);
     if (dialogAddr.ShowModal() == 2)
     {
         // Send
@@ -1195,11 +1195,11 @@ void CMainFrame::OnButtonCopy(wxCommandEvent& event)
 
 void CMainFrame::OnButtonChange(wxCommandEvent& event)
 {
-    CYourAddressDialog dialog(this, string(m_textCtrlAddress->GetValue()));
+    CYourAddressDialog dialog(this, std::string(m_textCtrlAddress->GetValue().ToAscii()));
     if (!dialog.ShowModal())
         return;
-    string strAddress = (string)dialog.GetAddress();
-    if (strAddress != m_textCtrlAddress->GetValue())
+    std::string strAddress = std::string(dialog.GetAddress().mb_str());
+    if (strAddress != std::string(m_textCtrlAddress->GetValue().mb_str()))
     {
         uint160 hash160;
         if (!AddressToHash160(strAddress, hash160))
@@ -1207,13 +1207,13 @@ void CMainFrame::OnButtonChange(wxCommandEvent& event)
         if (!mapPubKeys.count(hash160))
             return;
         CWalletDB().WriteDefaultKey(mapPubKeys[hash160]);
-        m_textCtrlAddress->SetValue(strAddress);
+        m_textCtrlAddress->SetValue(wxString(strAddress.c_str(), wxConvUTF8));
     }
 }
 
 void CMainFrame::OnListItemActivatedAllTransactions(wxListEvent& event)
 {
-    uint256 hash((string)GetItemText(m_listCtrl, event.GetIndex(), 1));
+    uint256 hash(std::string(GetItemText(m_listCtrl, event.GetIndex(), 1).ToUTF8()));
     CWalletTx wtx;
     CRITICAL_BLOCK(cs_mapWallet)
     {
@@ -1496,7 +1496,7 @@ CTxDetailsDialog::CTxDetailsDialog(wxWindow* parent, CWalletTx wtx) : CTxDetails
 
     strHTML += "</font></html>";
     string(strHTML.begin(), strHTML.end()).swap(strHTML);
-    m_htmlWin->SetPage(strHTML);
+    m_htmlWin->SetPage(wxString(strHTML.c_str(), wxConvUTF8));
     m_buttonOK->SetFocus();
 }
 
