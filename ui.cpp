@@ -64,7 +64,7 @@ bool Is24HourTime()
 string DateStr(int64 nTime)
 {
     // Can only be used safely here in the UI
-    return (string)wxDateTime((time_t)nTime).FormatDate();
+    return std::string(wxDateTime((time_t)nTime).FormatDate().mb_str(wxConvUTF8));
 }
 
 string DateTimeStr(int64 nTime)
@@ -72,9 +72,11 @@ string DateTimeStr(int64 nTime)
     // Can only be used safely here in the UI
     wxDateTime datetime((time_t)nTime);
     if (Is24HourTime())
-        return (string)datetime.Format("%x %H:%M");
+        return std::string(datetime.Format(wxString("%x %H:%M", wxConvUTF8)).mb_str(wxConvUTF8));
     else
-        return (string)datetime.Format("%x ") + itostr((datetime.GetHour() + 11) % 12 + 1) + (string)datetime.Format(":%M %p");
+        return std::string(datetime.Format(wxString("%x ", wxConvUTF8)).mb_str(wxConvUTF8)) 
+       + itostr((datetime.GetHour() + 11) % 12 + 1) 
+       + std::string(datetime.Format(wxString(":%M %p", wxConvUTF8)).mb_str(wxConvUTF8));
 }
 
 wxString GetItemText(wxListCtrl* listCtrl, int nIndex, int nColumn)
@@ -85,7 +87,7 @@ wxString GetItemText(wxListCtrl* listCtrl, int nIndex, int nColumn)
     item.m_col = nColumn;
     item.m_mask = wxLIST_MASK_TEXT;
     if (!listCtrl->GetItem(item))
-        return "";
+        return wxEmptyString;
     return item.GetText();
 }
 
@@ -1692,8 +1694,8 @@ CAboutDialog::CAboutDialog(wxWindow* parent) : CAboutDialogBase(parent)
 
     // Workaround until upgrade to wxWidgets supporting UTF-8
     wxString str = m_staticTextMain->GetLabel();
-    if (str.Find('Â') != wxNOT_FOUND)
-        str.Remove(str.Find('Â'), 1);
+    if (str.Find('ï¿½') != wxNOT_FOUND)
+        str.Remove(str.Find('ï¿½'), 1);
     m_staticTextMain->SetLabel(str);
 #ifndef __WXMSW__
     SetSize(510, 380);
