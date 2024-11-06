@@ -2887,12 +2887,12 @@ bool SendMoney(CScript scriptPubKey, int64 nValue, CWalletTx& wtxNew)
                 strError = strprintf("Error: This is an oversized transaction that requires a transaction fee of %s  ", FormatMoney(nFeeRequired).c_str());
             else
                 strError = "Error: Transaction creation failed  ";
-            wxMessageBox(strError, "Sending...");
+            wxMessageBox(wxString(strError.c_str(), wxConvUTF8), wxString("Sending...", wxConvUTF8));
             return error("SendMoney() : %s", strError.c_str());
         }
         if (!CommitTransactionSpent(wtxNew, key))
         {
-            wxMessageBox("Error finalizing transaction  ", "Sending...");
+            wxMessageBox(wxString("Error finalizing transaction  ", wxConvUTF8), wxString("Sending...", wxConvUTF8));
             return error("SendMoney() : Error finalizing transaction");
         }
 
@@ -2907,7 +2907,7 @@ bool SendMoney(CScript scriptPubKey, int64 nValue, CWalletTx& wtxNew)
         {
             // This must not fail. The transaction has already been signed and recorded.
             throw runtime_error("SendMoney() : wtxNew.AcceptTransaction() failed\n");
-            wxMessageBox("Error: Transaction not valid  ", "Sending...");
+            wxMessageBox(wxString("Error: Transaction not valid  ", wxConvUTF8), wxString("Sending...", wxConvUTF8));
             return error("SendMoney() : Error: Transaction not valid");
         }
         wtxNew.RelayWalletTransaction();
