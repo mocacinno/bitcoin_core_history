@@ -1590,7 +1590,7 @@ CAddress COptionsDialog::GetProxyAddr()
     CAddress addr(std::string(m_textCtrlProxyIP->GetValue().mb_str()) + ":" + std::string(m_textCtrlProxyPort->GetValue().mb_str()));
     if (addr.ip == INADDR_NONE)
         addr.ip = addrProxy.ip;
-    int nPort = atoi(m_textCtrlProxyPort->GetValue());
+    int nPort = atoi(m_textCtrlProxyPort->GetValue().mb_str());
     addr.port = htons(nPort);
     if (nPort <= 0 || nPort > USHRT_MAX)
         addr.port = addrProxy.port;
@@ -1599,8 +1599,8 @@ CAddress COptionsDialog::GetProxyAddr()
 
 void COptionsDialog::OnKillFocusProxy(wxFocusEvent& event)
 {
-    m_textCtrlProxyIP->SetValue(GetProxyAddr().ToStringIP());
-    m_textCtrlProxyPort->SetValue(GetProxyAddr().ToStringPort());
+    m_textCtrlProxyIP->SetValue(wxString(GetProxyAddr().ToStringIP().c_str(), wxConvUTF8));
+    m_textCtrlProxyPort->SetValue(wxString(GetProxyAddr().ToStringPort().c_str(), wxConvUTF8));
 }
 
 
