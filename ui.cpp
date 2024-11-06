@@ -1567,8 +1567,8 @@ void COptionsDialog::OnListBox(wxCommandEvent& event)
 void COptionsDialog::OnKillFocusTransactionFee(wxFocusEvent& event)
 {
     int64 nTmp = nTransactionFee;
-    ParseMoney(m_textCtrlTransactionFee->GetValue(), nTmp);
-    m_textCtrlTransactionFee->SetValue(FormatMoney(nTmp));
+    ParseMoney(m_textCtrlTransactionFee->GetValue().mb_str(), nTmp);
+    m_textCtrlTransactionFee->SetValue(wxString::FromUTF8((FormatMoney(nTmp).c_str())));
 }
 
 void COptionsDialog::OnCheckBoxLimitProcessors(wxCommandEvent& event)
@@ -1587,7 +1587,7 @@ void COptionsDialog::OnCheckBoxUseProxy(wxCommandEvent& event)
 CAddress COptionsDialog::GetProxyAddr()
 {
     // Be careful about byte order, addr.ip and addr.port are big endian
-    CAddress addr(m_textCtrlProxyIP->GetValue() + ":" + m_textCtrlProxyPort->GetValue());
+    CAddress addr(std::string(m_textCtrlProxyIP->GetValue().mb_str()) + ":" + std::string(m_textCtrlProxyPort->GetValue().mb_str()));
     if (addr.ip == INADDR_NONE)
         addr.ip = addrProxy.ip;
     int nPort = atoi(m_textCtrlProxyPort->GetValue());
