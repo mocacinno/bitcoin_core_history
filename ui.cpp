@@ -1620,7 +1620,7 @@ void COptionsDialog::OnButtonApply(wxCommandEvent& event)
     CWalletDB walletdb;
 
     int64 nPrevTransactionFee = nTransactionFee;
-    if (ParseMoney(m_textCtrlTransactionFee->GetValue(), nTransactionFee) && nTransactionFee != nPrevTransactionFee)
+    if (ParseMoney(m_textCtrlTransactionFee->GetValue().mb_str(), nTransactionFee) && nTransactionFee != nPrevTransactionFee)
         walletdb.WriteSetting("nTransactionFee", nTransactionFee);
 
     int nPrevMaxProc = (fLimitProcessors ? nLimitProcessors : INT_MAX);
@@ -1675,7 +1675,7 @@ void COptionsDialog::OnButtonApply(wxCommandEvent& event)
 
 CAboutDialog::CAboutDialog(wxWindow* parent) : CAboutDialogBase(parent)
 {
-    m_staticTextVersion->SetLabel(strprintf("version 0.%d.%d beta", VERSION/100, VERSION%100));
+    m_staticTextVersion->SetLabel(wxString(strprintf("version 0.%d.%d beta", VERSION/100, VERSION%100).c_str(), wxConvUTF8));
 
     // Workaround until upgrade to wxWidgets supporting UTF-8
     wxString str = m_staticTextMain->GetLabel();
@@ -1736,7 +1736,7 @@ CSendDialog::CSendDialog(wxWindow* parent, const wxString& strAddress) : CSendDi
 void CSendDialog::OnTextAddress(wxCommandEvent& event)
 {
     // Check mark
-    bool fBitcoinAddress = IsValidBitcoinAddress(m_textCtrlAddress->GetValue());
+    bool fBitcoinAddress = IsValidBitcoinAddress(std::string(m_textCtrlAddress->GetValue().mb_str(wxConvUTF8)));
     m_bitmapCheckMark->Show(fBitcoinAddress);
 
     // Grey out message if bitcoin address
@@ -1750,13 +1750,13 @@ void CSendDialog::OnTextAddress(wxCommandEvent& event)
     {
         strFromSave    = m_textCtrlFrom->GetValue();
         strMessageSave = m_textCtrlMessage->GetValue();
-        m_textCtrlFrom->SetValue("Will appear as \"From: Unknown\"");
-        m_textCtrlMessage->SetValue("Can't include a message when sending to a Bitcoin address");
+        m_textCtrlFrom->SetValue(wxString("Will appear as \"From: Unknown\"", wxConvUTF8));
+        m_textCtrlMessage->SetValue(wxString("Can't include a message when sending to a Bitcoin address", wxConvUTF8));
     }
     else if (fEnable && !fEnabledPrev)
     {
-        m_textCtrlFrom->SetValue(strFromSave);
-        m_textCtrlMessage->SetValue(strMessageSave);
+        m_textCtrlFrom->SetValue(wxString(strFromSave.c_str(), wxConvUTF8));
+        m_textCtrlMessage->SetValue(wxString(strMessageSave.c_str(), wxConvUTF8));
     }
     fEnabledPrev = fEnable;
 }
@@ -1767,8 +1767,8 @@ void CSendDialog::OnKillFocusAmount(wxFocusEvent& event)
     if (m_textCtrlAmount->GetValue().Trim().empty())
         return;
     int64 nTmp;
-    if (ParseMoney(m_textCtrlAmount->GetValue(), nTmp))
-        m_textCtrlAmount->SetValue(FormatMoney(nTmp));
+    if (ParseMoney(m_textCtrlAmount->GetValue().mb_str(), nTmp))
+        m_textCtrlAmount->SetValue(wxString(FormatMoney(nTmp).c_str(), wxConvUTF8));
 }
 
 void CSendDialog::OnButtonAddressBook(wxCommandEvent& event)
@@ -1797,13 +1797,13 @@ void CSendDialog::OnButtonPaste(wxCommandEvent& event)
 void CSendDialog::OnButtonSend(wxCommandEvent& event)
 {
     CWalletTx wtx;
-    string strAddress = (string)m_textCtrlAddress->GetValue();
+    std::string strAddress = std::string(reinterpret_cast<const char*>(m_textCtrlAddress->GetValue().c_str()));
 
     // Parse amount
     int64 nValue = 0;
-    if (!ParseMoney(m_textCtrlAmount->GetValue(), nValue) || nValue <= 0)
+    if (!ParseMoney(m_textCtrlAmount->GetValue().mb_str(wxConvUTF8), nValue) || nValue <= 0)
     {
-        wxMessageBox("Error in amount  ", "Send Coins");
+        wxMessageBox(wxString(wxT("Error in amount  ")), wxString(wxT("Send Coins")));
         return;
     }
     if (nValue > GetBalance())
