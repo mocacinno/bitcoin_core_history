@@ -1967,9 +1967,9 @@ void CSendingDialog::OnPaint(wxPaintEvent& event)
         m_buttonOK->Enable(true);
         m_buttonOK->SetFocus();
         m_buttonCancel->Enable(false);
-        m_buttonCancel->SetLabel("Cancelled");
+        m_buttonCancel->SetLabel(wxString("Cancelled", wxConvUTF8));
         Close();
-        wxMessageBox("Transfer cancelled  ", "Sending...", wxOK, this);
+        wxMessageBox(wxString("Transfer cancelled", wxConvUTF8), wxString("Sending...", wxConvUTF8), wxOK, this);
     }
     event.Skip();
 }
@@ -2205,8 +2205,8 @@ void CSendingDialog::OnReply3(CDataStream& vRecv)
 CYourAddressDialog::CYourAddressDialog(wxWindow* parent, const string& strInitSelected) : CYourAddressDialogBase(parent)
 {
     // Init column headers
-    m_listCtrl->InsertColumn(0, "Label", wxLIST_FORMAT_LEFT, 200);
-    m_listCtrl->InsertColumn(1, "Bitcoin Address", wxLIST_FORMAT_LEFT, 350);
+    m_listCtrl->InsertColumn(0, wxString("Label", wxConvUTF8), wxLIST_FORMAT_LEFT, 200);
+    m_listCtrl->InsertColumn(1, wxString("Bitcoin Address", wxConvUTF8), wxLIST_FORMAT_LEFT, 350);
     m_listCtrl->SetFocus();
 
     // Fill listctrl with address book data
@@ -2220,7 +2220,7 @@ CYourAddressDialog::CYourAddressDialog(wxWindow* parent, const string& strInitSe
             bool fMine = (AddressToHash160(strAddress, hash160) && mapPubKeys.count(hash160));
             if (fMine)
             {
-                int nIndex = InsertLine(m_listCtrl, strName, strAddress);
+                int nIndex = InsertLine(m_listCtrl, wxString(strName.c_str(), wxConvUTF8), wxString(strAddress.c_str(), wxConvUTF8));
                 if (strAddress == strInitSelected)
                     m_listCtrl->SetItemState(nIndex, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
             }
@@ -2232,7 +2232,7 @@ wxString CYourAddressDialog::GetAddress()
 {
     int nIndex = GetSelection(m_listCtrl);
     if (nIndex == -1)
-        return "";
+        return wxString();
     return GetItemText(m_listCtrl, nIndex, 1);
 }
 
@@ -2241,8 +2241,8 @@ void CYourAddressDialog::OnListEndLabelEdit(wxListEvent& event)
     // Update address book with edited name
     if (event.IsEditCancelled())
         return;
-    string strAddress = (string)GetItemText(m_listCtrl, event.GetIndex(), 1);
-    SetAddressBookName(strAddress, string(event.GetText()));
+    string strAddress = std::string(GetItemText(m_listCtrl, event.GetIndex(), 1).mb_str());
+    SetAddressBookName(strAddress, std::string(event.GetText().mb_str()));
     pframeMain->RefreshListCtrl();
 }
 
@@ -2263,8 +2263,8 @@ void CYourAddressDialog::OnButtonRename(wxCommandEvent& event)
     int nIndex = GetSelection(m_listCtrl);
     if (nIndex == -1)
         return;
-    string strName = (string)m_listCtrl->GetItemText(nIndex);
-    string strAddress = (string)GetItemText(m_listCtrl, nIndex, 1);
+    std::string strName = (std::string)m_listCtrl->GetItemText(nIndex).mb_str();
+    std::string strAddress = (std::string)GetItemText(m_listCtrl, nIndex, 1).mb_str();
     CGetTextFromUserDialog dialog(this, "Edit Address Label", "New Label", strName);
     if (!dialog.ShowModal())
         return;
@@ -2272,7 +2272,7 @@ void CYourAddressDialog::OnButtonRename(wxCommandEvent& event)
 
     // Change name
     SetAddressBookName(strAddress, strName);
-    m_listCtrl->SetItemText(nIndex, strName);
+    m_listCtrl->SetItemText(nIndex, wxString(strName.c_str(), wxConvUTF8));
     pframeMain->RefreshListCtrl();
 }
 
@@ -2289,7 +2289,7 @@ void CYourAddressDialog::OnButtonNew(wxCommandEvent& event)
     SetAddressBookName(strAddress, strName);
 
     // Add to list and select it
-    int nIndex = InsertLine(m_listCtrl, strName, strAddress);
+    int nIndex = InsertLine(m_listCtrl, wxString(strName.c_str(), wxConvUTF8), wxString(strAddress.c_str(), wxConvUTF8));
     SetSelection(m_listCtrl, nIndex);
     m_listCtrl->SetFocus();
 }
@@ -2339,8 +2339,8 @@ CAddressBookDialog::CAddressBookDialog(wxWindow* parent, const wxString& strInit
         m_buttonCancel->Show(false);
 
     // Init column headers
-    m_listCtrl->InsertColumn(0, "Name", wxLIST_FORMAT_LEFT, 200);
-    m_listCtrl->InsertColumn(1, "Address", wxLIST_FORMAT_LEFT, 350);
+    m_listCtrl->InsertColumn(0, wxString("Name", wxConvUTF8), wxLIST_FORMAT_LEFT, 200);
+    m_listCtrl->InsertColumn(1, wxString("Address", wxConvUTF8), wxLIST_FORMAT_LEFT, 350);
     m_listCtrl->SetFocus();
 
     // Set Icon
@@ -2359,8 +2359,8 @@ CAddressBookDialog::CAddressBookDialog(wxWindow* parent, const wxString& strInit
             bool fMine = (AddressToHash160(strAddress, hash160) && mapPubKeys.count(hash160));
             if (!fMine)
             {
-                int nIndex = InsertLine(m_listCtrl, strName, strAddress);
-                if (strAddress == strInitSelected)
+                int nIndex = InsertLine(m_listCtrl, wxString(strName.c_str(), wxConvUTF8), wxString(strAddress.c_str(), wxConvUTF8));
+                if (wxString(strAddress.c_str(), wxConvUTF8) == strInitSelected)
                     m_listCtrl->SetItemState(nIndex, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
             }
         }
@@ -2371,7 +2371,7 @@ wxString CAddressBookDialog::GetAddress()
 {
     int nIndex = GetSelection(m_listCtrl);
     if (nIndex == -1)
-        return "";
+        return wxString();
     return GetItemText(m_listCtrl, nIndex, 1);
 }
 
@@ -2380,8 +2380,8 @@ void CAddressBookDialog::OnListEndLabelEdit(wxListEvent& event)
     // Update address book with edited name
     if (event.IsEditCancelled())
         return;
-    string strAddress = (string)GetItemText(m_listCtrl, event.GetIndex(), 1);
-    SetAddressBookName(strAddress, string(event.GetText()));
+    std::string strAddress = (std::string)GetItemText(m_listCtrl, event.GetIndex(), 1).mb_str();
+    SetAddressBookName(strAddress, std::string(event.GetText().mb_str()));
     pframeMain->RefreshListCtrl();
 }
 
@@ -2394,7 +2394,7 @@ void CAddressBookDialog::OnListItemActivated(wxListEvent& event)
     if (fSending)
     {
         // Doubleclick returns selection
-        EndModal(GetAddress() != "" ? 2 : 0);
+        EndModal(GetAddress() != wxEmptyString ? 2 : 0);
     }
     else
     {
@@ -2409,7 +2409,7 @@ bool CAddressBookDialog::CheckIfMine(const string& strAddress, const string& str
     uint160 hash160;
     bool fMine = (AddressToHash160(strAddress, hash160) && mapPubKeys.count(hash160));
     if (fMine)
-        wxMessageBox("This is one of your own addresses for receiving payments and cannot be entered in the address book.  ", strTitle);
+        wxMessageBox(wxString("This is one of your own addresses for receiving payments and cannot be entered in the address book.  ", wxConvUTF8), wxString(strTitle.c_str(), wxConvUTF8));
     return fMine;
 }
 
@@ -2419,8 +2419,8 @@ void CAddressBookDialog::OnButtonEdit(wxCommandEvent& event)
     int nIndex = GetSelection(m_listCtrl);
     if (nIndex == -1)
         return;
-    string strName = (string)m_listCtrl->GetItemText(nIndex);
-    string strAddress = (string)GetItemText(m_listCtrl, nIndex, 1);
+    std::string strName = (std::string)m_listCtrl->GetItemText(nIndex).mb_str();
+    std::string strAddress = (std::string)GetItemText(m_listCtrl, nIndex, 1).mb_str();
     string strAddressOrg = strAddress;
     do
     {
@@ -2436,8 +2436,8 @@ void CAddressBookDialog::OnButtonEdit(wxCommandEvent& event)
     if (strAddress != strAddressOrg)
         CWalletDB().EraseName(strAddressOrg);
     SetAddressBookName(strAddress, strName);
-    m_listCtrl->SetItem(nIndex, 1, strAddress);
-    m_listCtrl->SetItemText(nIndex, strName);
+    m_listCtrl->SetItem(nIndex, 1, wxString(strAddress.c_str(), wxConvUTF8));
+    m_listCtrl->SetItemText(nIndex, wxString(strName.c_str(), wxConvUTF8));
     pframeMain->RefreshListCtrl();
 }
 
@@ -2458,7 +2458,7 @@ void CAddressBookDialog::OnButtonNew(wxCommandEvent& event)
 
     // Add to list and select it
     SetAddressBookName(strAddress, strName);
-    int nIndex = InsertLine(m_listCtrl, strName, strAddress);
+    int nIndex = InsertLine(m_listCtrl, wxString(strName.c_str(), wxConvUTF8), wxString(strAddress.c_str(), wxConvUTF8));
     SetSelection(m_listCtrl, nIndex);
     m_listCtrl->SetFocus();
     pframeMain->RefreshListCtrl();
@@ -2470,7 +2470,7 @@ void CAddressBookDialog::OnButtonDelete(wxCommandEvent& event)
     {
         if (m_listCtrl->GetItemState(nIndex, wxLIST_STATE_SELECTED))
         {
-            string strAddress = (string)GetItemText(m_listCtrl, nIndex, 1);
+            std::string strAddress = (std::string)GetItemText(m_listCtrl, nIndex, 1).mb_str();
             CWalletDB().EraseName(strAddress);
             m_listCtrl->DeleteItem(nIndex);
         }
