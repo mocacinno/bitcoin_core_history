@@ -2824,11 +2824,11 @@ void CEditProductDialog::SetProduct(const CProduct& productIn)
 {
     CProduct product = productIn;
 
-    m_comboBoxCategory->SetValue(product.mapValue["category"]);
-    m_textCtrlTitle->SetValue(product.mapValue["title"]);
-    m_textCtrlPrice->SetValue(product.mapValue["price"]);
-    m_textCtrlDescription->SetValue(product.mapValue["description"]);
-    m_textCtrlInstructions->SetValue(product.mapValue["instructions"]);
+    m_comboBoxCategory->SetValue(wxString(product.mapValue["category"].c_str(), wxConvUTF8));
+    m_textCtrlTitle->SetValue(wxString(product.mapValue["title"].c_str(), wxConvUTF8));
+    m_textCtrlPrice->SetValue(wxString(product.mapValue["price"].c_str(), wxConvUTF8));
+    m_textCtrlDescription->SetValue(wxString(product.mapValue["description"].c_str(), wxConvUTF8));
+    m_textCtrlInstructions->SetValue(wxString(product.mapValue["instructions"].c_str(), wxConvUTF8));
 
     for (int i = 0; i < FIELDS_MAX; i++)
     {
@@ -2839,14 +2839,14 @@ void CEditProductDialog::SetProduct(const CProduct& productIn)
         if (!fUsed)
             continue;
 
-        m_textCtrlLabel[i]->SetValue(product.vOrderForm[i].first);
+        m_textCtrlLabel[i]->SetValue(wxString(product.vOrderForm[i].first.c_str(), wxConvUTF8));
         string strControl = product.vOrderForm[i].second;
         if (strControl.substr(0, 5) == "text=")
-            m_textCtrlField[i]->SetValue("");
+            m_textCtrlField[i]->SetValue(wxString());
         else if (strControl.substr(0, 7) == "choice=")
-            m_textCtrlField[i]->SetValue(strControl.substr(7));
+            m_textCtrlField[i]->SetValue(wxString(strControl.substr(7).c_str(), wxConvUTF8));
         else
-            m_textCtrlField[i]->SetValue(strControl);
+            m_textCtrlField[i]->SetValue(wxString(strControl.c_str(), wxConvUTF8));
     }
 }
 
@@ -2865,8 +2865,8 @@ void CEditProductDialog::GetProduct(CProduct& product)
     {
         if (m_buttonDel[i]->IsShown())
         {
-            string strLabel = (string)m_textCtrlLabel[i]->GetValue().Trim();
-            string strControl = (string)m_textCtrlField[i]->GetValue();
+            std::string strLabel = std::string(m_textCtrlLabel[i]->GetValue().Trim().mb_str());
+            std::string strControl = std::string(m_textCtrlField[i]->GetValue().mb_str());
             if (strControl.empty())
                 strControl = "text=";
             else
