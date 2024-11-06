@@ -366,7 +366,7 @@ CMainFrame::CMainFrame(wxWindow* parent) : CMainFrameBase(parent)
     // Fill your address text box
     vector<unsigned char> vchPubKey;
     if (CWalletDB("r").ReadDefaultKey(vchPubKey))
-        m_textCtrlAddress->SetValue(PubKeyToAddress(vchPubKey));
+        m_textCtrlAddress->SetValue(wxString(PubKeyToAddress(vchPubKey).c_str(), wxConvUTF8));
 
     // Fill listctrl with wallet transactions
     RefreshListCtrl();
@@ -481,7 +481,7 @@ int CMainFrame::GetSortIndex(const string& strSort)
     while (low < high)
     {
         int mid = low + ((high - low) / 2);
-        if (strSort.compare(m_listCtrl->GetItemText(mid).c_str()) >= 0)
+        if (strSort.compare(std::string(m_listCtrl->GetItemText(mid).mb_str())) >= 0)
             high = mid;
         else
             low = mid + 1;
@@ -499,26 +499,26 @@ void CMainFrame::InsertLine(bool fNew, int nIndex, uint256 hashKey, string strSo
     if (!fNew && nIndex == -1)
     {
         while ((nIndex = m_listCtrl->FindItem(nIndex, nData)) != -1)
-            if (GetItemText(m_listCtrl, nIndex, 1) == hashKey.ToString())
+            if (std::string(GetItemText(m_listCtrl, nIndex, 1).mb_str()) == hashKey.ToString())
                 break;
     }
 
     // fNew is for blind insert, only use if you're sure it's new
     if (fNew || nIndex == -1)
     {
-        nIndex = m_listCtrl->InsertItem(GetSortIndex(strSort), str0);
+        nIndex = m_listCtrl->InsertItem(GetSortIndex(strSort), wxString::FromUTF8(str0.c_str()));
     }
     else
     {
         // If sort key changed, must delete and reinsert to make it relocate
-        if (GetItemText(m_listCtrl, nIndex, 0) != str0)
+        if (GetItemText(m_listCtrl, nIndex, 0) != wxString::FromUTF8(str0.c_str()))
         {
             m_listCtrl->DeleteItem(nIndex);
-            nIndex = m_listCtrl->InsertItem(GetSortIndex(strSort), str0);
+            nIndex = m_listCtrl->InsertItem(GetSortIndex(strSort), wxString::FromUTF8(str0.c_str()));
         }
     }
 
-    m_listCtrl->SetItem(nIndex, 1, hashKey.ToString());
+    m_listCtrl->SetItem(nIndex, 1, wxString::FromUTF8(hashKey.ToString().c_str()));
     m_listCtrl->SetItem(nIndex, 2, str2);
     m_listCtrl->SetItem(nIndex, 3, str3);
     m_listCtrl->SetItem(nIndex, 4, str4);
@@ -534,7 +534,7 @@ bool CMainFrame::DeleteLine(uint256 hashKey)
     // Find item
     int nIndex = -1;
     while ((nIndex = m_listCtrl->FindItem(nIndex, nData)) != -1)
-        if (GetItemText(m_listCtrl, nIndex, 1) == hashKey.ToString())
+        if (GetItemText(m_listCtrl, nIndex, 1) == wxString::FromUTF8(hashKey.ToString().c_str()))
             break;
 
     if (nIndex != -1)
