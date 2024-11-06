@@ -1893,8 +1893,8 @@ CSendingDialog::CSendingDialog(wxWindow* parent, const CAddress& addrIn, int64 n
     SetSize(1.2 * GetSize().GetWidth(), 1.05 * GetSize().GetHeight());
 #endif
 
-    SetTitle(strprintf("Sending %s to %s", FormatMoney(nPrice).c_str(), wtx.mapValue["to"].c_str()));
-    m_textCtrlStatus->SetValue("");
+    SetTitle(wxString::FromUTF8(strprintf("Sending %s to %s", FormatMoney(nPrice).c_str(), wtx.mapValue["to"].c_str()).c_str()));
+    m_textCtrlStatus->SetValue(wxString());
 
     CreateThread(SendingDialogStartTransfer, this);
 }
@@ -1950,10 +1950,8 @@ void CSendingDialog::OnButtonCancel(wxCommandEvent& event)
 
 void CSendingDialog::OnPaint(wxPaintEvent& event)
 {
-    if (strlen(pszStatus) > 130)
-        m_textCtrlStatus->SetValue(string("\n") + pszStatus);
-    else
-        m_textCtrlStatus->SetValue(string("\n\n") + pszStatus);
+    wxString wxStatus = wxString::FromUTF8(pszStatus);
+    m_textCtrlStatus->SetValue(wxStatus);
     m_staticTextSending->SetFocus();
     if (!fCanCancel)
         m_buttonCancel->Enable(false);
