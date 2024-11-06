@@ -3594,7 +3594,7 @@ bool CMyApp::OnInit2()
     string strErrors;
     if (!BindListenPort(strErrors))
     {
-        wxMessageBox(strErrors, "Bitcoin");
+        wxMessageBox(wxString(strErrors.c_str(), wxConvUTF8), wxString("Bitcoin", wxConvUTF8));
         return false;
     }
 
@@ -3635,7 +3635,7 @@ bool CMyApp::OnInit2()
 
     if (!strErrors.empty())
     {
-        wxMessageBox(strErrors, "Bitcoin");
+        wxMessageBox(wxString(strErrors.c_str(), wxConvUTF8), wxString("Bitcoin", wxConvUTF8));
         return false;
     }
 
@@ -3688,7 +3688,8 @@ bool CMyApp::OnInit2()
         addrProxy = CAddress(mapArgs["-proxy"]);
         if (!addrProxy.IsValid())
         {
-            wxMessageBox("Invalid -proxy address", "Bitcoin");
+            wxMessageBox(wxString("Invalid -proxy address", wxConvUTF8), wxString("Bitcoin", wxConvUTF8));
+
             return false;
         }
     }
@@ -3725,7 +3726,7 @@ bool CMyApp::OnInit2()
     RandAddSeedPerfmon();
 
     if (!CreateThread(StartNode, NULL))
-        wxMessageBox("Error: CreateThread(StartNode) failed", "Bitcoin");
+        wxMessageBox(wxString("Error: CreateThread(StartNode) failed", wxConvUTF8), wxString("Bitcoin", wxConvUTF8));
 
     if (fFirstRun)
         SetStartOnSystemStartup(true);
