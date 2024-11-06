@@ -3128,7 +3128,9 @@ void CViewProductDialog::GetOrder(CWalletTx& wtx)
             strValue = m_textCtrlField[i]->GetValue().Trim();
         else
             strValue = m_choiceField[i]->GetStringSelection();
-        wtx.vOrderForm.push_back(make_pair(m_staticTextLabel[i]->GetLabel(), strValue));
+        wxString label = m_staticTextLabel[i]->GetLabel();
+        const char* label_cstr = label.mb_str(wxConvUTF8);  // Convert wxString to UTF-8 encoded const char*
+        wtx.vOrderForm.push_back(make_pair(label_cstr, strValue));
     }
 }
 
@@ -3738,12 +3740,12 @@ bool CMyApp::OnInit2()
 #ifdef __WXMSW__
     if (argc >= 2 && stricmp(argv[1], "-send") == 0)
 #else
-    if (argc >= 2 && strcmp(argv[1], "-send") == 0)
+    if (argc >= 2 && strcmp(wxString(argv[1]).mb_str(), "-send") == 0)
 #endif
     {
         int64 nValue = 1;
         if (argc >= 3)
-            ParseMoney(argv[2], nValue);
+            ParseMoney(wxString(argv[2]).mb_str(), nValue);
 
         string strAddress;
         if (argc >= 4)
@@ -3779,14 +3781,14 @@ bool CMyApp::OnExceptionInMainLoop()
     catch (std::exception& e)
     {
         PrintException(&e, "CMyApp::OnExceptionInMainLoop()");
-        wxLogWarning("Exception %s %s", typeid(e).name(), e.what());
+        wxLogWarning(wxString::Format(wxT("Exception %s %s"), typeid(e).name(), e.what()));
         Sleep(1000);
         throw;
     }
     catch (...)
     {
         PrintException(NULL, "CMyApp::OnExceptionInMainLoop()");
-        wxLogWarning("Unknown exception");
+        wxLogWarning(wxString("Unknown exception", wxConvUTF8));
         Sleep(1000);
         throw;
     }
@@ -3804,14 +3806,14 @@ void CMyApp::OnUnhandledException()
     catch (std::exception& e)
     {
         PrintException(&e, "CMyApp::OnUnhandledException()");
-        wxLogWarning("Exception %s %s", typeid(e).name(), e.what());
+        wxLogWarning(wxString::Format(wxT("Exception %s %s"), typeid(e).name(), e.what()));
         Sleep(1000);
         throw;
     }
     catch (...)
     {
         PrintException(NULL, "CMyApp::OnUnhandledException()");
-        wxLogWarning("Unknown exception");
+        wxLogWarning(wxString("Unknown exception", wxConvUTF8));
         Sleep(1000);
         throw;
     }
@@ -3819,7 +3821,7 @@ void CMyApp::OnUnhandledException()
 
 void CMyApp::OnFatalException()
 {
-    wxMessageBox("Program has crashed and will terminate.  ", "Bitcoin", wxOK | wxICON_ERROR);
+    wxMessageBox(wxString("Program has crashed and will terminate.  ", wxConvUTF8), wxString("Bitcoin", wxConvUTF8), wxOK | wxICON_ERROR);
 }
 
 
