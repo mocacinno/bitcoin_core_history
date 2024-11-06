@@ -392,7 +392,7 @@ void PrintException(std::exception* pex, const char* pszThread)
     FormatException(pszMessage, pex, pszThread);
     printf("\n\n************************\n%s\n", pszMessage);
     if (wxTheApp)
-        wxMessageBox(pszMessage, "Error", wxOK | wxICON_ERROR);
+        wxMessageBox(wxString("An error occurred", wxConvUTF8), wxString("Error", wxConvUTF8), wxOK | wxICON_ERROR);
     throw;
     //DebugBreak();
 }
@@ -429,7 +429,7 @@ void GetDataDir(char* pszDir)
         static char pszCachedDir[MAX_PATH];
         if (pszCachedDir[0] == 0)
         {
-            strlcpy(pszCachedDir, wxStandardPaths::Get().GetUserDataDir().c_str(), sizeof(pszCachedDir));
+            strlcpy(pszCachedDir, wxStandardPaths::Get().GetUserDataDir().mb_str(wxConvUTF8), sizeof(pszCachedDir));
             _mkdir(pszCachedDir);
         }
         strlcpy(pszDir, pszCachedDir, MAX_PATH);

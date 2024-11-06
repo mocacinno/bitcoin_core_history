@@ -159,7 +159,7 @@ protected:
 	
 public:
     /** Constructor */
-    CSendDialog(wxWindow* parent, const wxString& strAddress="");
+    CSendDialog(wxWindow* parent, const wxString& strAddress = wxEmptyString);
 
     // Custom
     bool fEnabledPrev;
@@ -414,20 +414,20 @@ protected:
 public:
     /** Constructor */
     CGetTextFromUserDialog(wxWindow* parent,
-                           const string& strCaption,
-                           const string& strMessage1,
-                           const string& strValue1="",
-                           const string& strMessage2="",
-                           const string& strValue2="") : CGetTextFromUserDialogBase(parent, wxID_ANY, strCaption)
+                       const std::string& strCaption,
+                       const std::string& strMessage1,
+                       const std::string& strValue1 = "",
+                       const std::string& strMessage2 = "",
+                       const std::string& strValue2 = "") : CGetTextFromUserDialogBase(parent, wxID_ANY, wxString(strCaption.c_str(), wxConvUTF8)) // Convert to wxString
     {
-        m_staticTextMessage1->SetLabel(strMessage1);
-        m_textCtrl1->SetValue(strValue1);
+        m_staticTextMessage1->SetLabel(wxString(strMessage1.c_str(), wxConvUTF8));  // Convert to wxString
+        m_textCtrl1->SetValue(wxString(strValue1.c_str(), wxConvUTF8));             // Convert to wxString
         if (!strMessage2.empty())
         {
             m_staticTextMessage2->Show(true);
-            m_staticTextMessage2->SetLabel(strMessage2);
+            m_staticTextMessage2->SetLabel(wxString(strMessage2.c_str(), wxConvUTF8)); // Convert to wxString
             m_textCtrl2->Show(true);
-            m_textCtrl2->SetValue(strValue2);
+            m_textCtrl2->SetValue(wxString(strValue2.c_str(), wxConvUTF8));            // Convert to wxString
             SetSize(wxDefaultCoord, 180);
         }
     }
