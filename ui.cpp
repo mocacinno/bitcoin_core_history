@@ -784,7 +784,7 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
                 
                 InsertLine(fNew, nIndex, hash, 
                     strprintf("%s-%d", strSort.c_str(), nOut),  
-                    wxString(strStatus.c_str(), wxConvUTF8),  g
+                    wxString(strStatus.c_str(), wxConvUTF8),
                     nTime ? wxString(DateTimeStr(nTime).c_str(), wxConvUTF8) : wxString(),  
                     wxString(SingleLine(strDescription).c_str(), wxConvUTF8),  
                     wxString(FormatMoney(-nValue, true).c_str(), wxConvUTF8),  
