@@ -1518,17 +1518,17 @@ void CTxDetailsDialog::OnButtonOK(wxCommandEvent& event)
 COptionsDialog::COptionsDialog(wxWindow* parent) : COptionsDialogBase(parent)
 {
     // Set up list box of page choices
-    m_listBox->Append("Main");
+    m_listBox->Append(wxString("Main", wxConvUTF8));
     //m_listBox->Append("Test 2");
     m_listBox->SetSelection(0);
     SelectPage(0);
 #ifndef __WXMSW__
-    m_checkBoxMinimizeOnClose->SetLabel("&Minimize on close");
+    m_checkBoxMinimizeOnClose->SetLabel(wxString("&Minimize on close", wxConvUTF8));
     m_checkBoxStartOnSystemStartup->Enable(false); // not implemented yet
 #endif
 
     // Init values
-    m_textCtrlTransactionFee->SetValue(FormatMoney(nTransactionFee));
+    m_textCtrlTransactionFee->SetValue(wxString::FromUTF8((FormatMoney(nTransactionFee).c_str())));
     m_checkBoxLimitProcessors->SetValue(fLimitProcessors);
     m_spinCtrlLimitProcessors->Enable(fLimitProcessors);
     m_spinCtrlLimitProcessors->SetValue(nLimitProcessors);
@@ -1544,8 +1544,8 @@ COptionsDialog::COptionsDialog(wxWindow* parent) : COptionsDialogBase(parent)
     m_textCtrlProxyPort->Enable(fUseProxy);
     m_staticTextProxyIP->Enable(fUseProxy);
     m_staticTextProxyPort->Enable(fUseProxy);
-    m_textCtrlProxyIP->SetValue(addrProxy.ToStringIP());
-    m_textCtrlProxyPort->SetValue(addrProxy.ToStringPort());
+    m_textCtrlProxyIP->SetValue(wxString(addrProxy.ToStringIP().c_str(), wxConvUTF8));
+    m_textCtrlProxyPort->SetValue(wxString(addrProxy.ToStringPort().c_str(), wxConvUTF8));
 
     m_buttonOK->SetFocus();
 }
