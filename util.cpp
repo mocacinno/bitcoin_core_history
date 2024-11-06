@@ -330,22 +330,26 @@ vector<unsigned char> ParseHex(const std::string& str)
 }
 
 
-void ParseParameters(int argc, char* argv[])
+void ParseParameters(int argc, wxChar* argv[])
 {
     mapArgs.clear();
     mapMultiArgs.clear();
+
     for (int i = 0; i < argc; i++)
     {
         char psz[10000];
-        strlcpy(psz, argv[i], sizeof(psz));
-        char* pszValue = (char*)"";
+        // Manually convert wxChar* (wxString-compatible) to char* using wxString's ToUTF8 method
+        wxString arg(argv[i]);
+        strlcpy(psz, (const char*)arg.ToUTF8().data(), sizeof(psz));
+
+        char* pszValue = (char*)"";  // Default to empty string if no '=' is found
         if (strchr(psz, '='))
         {
             pszValue = strchr(psz, '=');
             *pszValue++ = '\0';
         }
         #ifdef __WXMSW__
-        _strlwr(psz);
+        _strlwr(psz);  // Convert to lowercase on Windows
         if (psz[0] == '/')
             psz[0] = '-';
         #endif
@@ -353,6 +357,7 @@ void ParseParameters(int argc, char* argv[])
         mapMultiArgs[psz].push_back(pszValue);
     }
 }
+
 
 
 
