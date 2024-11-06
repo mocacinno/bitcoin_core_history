@@ -330,15 +330,15 @@ CMainFrame::CMainFrame(wxWindow* parent) : CMainFrameBase(parent)
     m_staticTextBalance->SetSize(140, 17);
     // & underlines don't work on the toolbar buttons on gtk
     m_toolBar->ClearTools();
-    m_toolBar->AddTool(wxID_BUTTONSEND, "Send Coins", wxBitmap(send20_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString);
-    m_toolBar->AddTool(wxID_BUTTONRECEIVE, "Address Book", wxBitmap(addressbook20_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString);
+    m_toolBar->AddTool(wxID_BUTTONSEND, wxString("Send Coins", wxConvUTF8), wxBitmap(send20_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString);
+    m_toolBar->AddTool(wxID_BUTTONRECEIVE, wxString("Address Book", wxConvUTF8), wxBitmap(addressbook20_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString);
     m_toolBar->Realize();
     // resize to fit ubuntu's huge default font
     dResize = 1.19;
     SetSize(dResize * GetSize().GetWidth(), 1.1 * GetSize().GetHeight());
     dResize = 1.20;
 #endif
-    m_staticTextBalance->SetLabel(FormatMoney(GetBalance()) + "  ");
+    m_staticTextBalance->SetLabel(wxString(FormatMoney(GetBalance()).c_str(), wxConvUTF8));
     m_listCtrl->SetFocus();
     ptaskbaricon = new CMyTaskBarIcon();
 
@@ -346,31 +346,14 @@ CMainFrame::CMainFrame(wxWindow* parent) : CMainFrameBase(parent)
     int nDateWidth = DateTimeStr(1229413914).size() * 6 + 8;
     if (!strstr(DateTimeStr(1229413914).c_str(), "2008"))
         nDateWidth += 12;
-    m_listCtrl->InsertColumn(0, "",             wxLIST_FORMAT_LEFT,  dResize * 0);
-    m_listCtrl->InsertColumn(1, "",             wxLIST_FORMAT_LEFT,  dResize * 0);
-    m_listCtrl->InsertColumn(2, "Status",       wxLIST_FORMAT_LEFT,  dResize * 90);
-    m_listCtrl->InsertColumn(3, "Date",         wxLIST_FORMAT_LEFT,  dResize * nDateWidth);
-    m_listCtrl->InsertColumn(4, "Description",  wxLIST_FORMAT_LEFT,  dResize * 409 - nDateWidth);
-    m_listCtrl->InsertColumn(5, "Debit",        wxLIST_FORMAT_RIGHT, dResize * 79);
-    m_listCtrl->InsertColumn(6, "Credit",       wxLIST_FORMAT_RIGHT, dResize * 79);
+    m_listCtrl->InsertColumn(0, wxString::FromUTF8(""), wxLIST_FORMAT_LEFT, dResize * 0);
+    m_listCtrl->InsertColumn(1, wxString::FromUTF8(""), wxLIST_FORMAT_LEFT, dResize * 0);
+    m_listCtrl->InsertColumn(2, wxString::FromUTF8("Status"), wxLIST_FORMAT_LEFT, dResize * 90);
+    m_listCtrl->InsertColumn(3, wxString::FromUTF8("Date"), wxLIST_FORMAT_LEFT, dResize * nDateWidth);
+    m_listCtrl->InsertColumn(4, wxString::FromUTF8("Description"), wxLIST_FORMAT_LEFT, dResize * 409 - nDateWidth);
+    m_listCtrl->InsertColumn(5, wxString::FromUTF8("Debit"), wxLIST_FORMAT_RIGHT, dResize * 79);
+    m_listCtrl->InsertColumn(6, wxString::FromUTF8("Credit"), wxLIST_FORMAT_RIGHT, dResize * 79);
 
-    //m_listCtrlProductsSent->InsertColumn(0, "Category",      wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlProductsSent->InsertColumn(1, "Title",         wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlProductsSent->InsertColumn(2, "Description",   wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlProductsSent->InsertColumn(3, "Price",         wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlProductsSent->InsertColumn(4, "",              wxLIST_FORMAT_LEFT,  100);
-
-    //m_listCtrlOrdersSent->InsertColumn(0, "Time",          wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersSent->InsertColumn(1, "Price",         wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersSent->InsertColumn(2, "",              wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersSent->InsertColumn(3, "",              wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersSent->InsertColumn(4, "",              wxLIST_FORMAT_LEFT,  100);
-
-    //m_listCtrlOrdersReceived->InsertColumn(0, "Time",            wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersReceived->InsertColumn(1, "Price",           wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersReceived->InsertColumn(2, "Payment Status",  wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersReceived->InsertColumn(3, "",                wxLIST_FORMAT_LEFT,  100);
-    //m_listCtrlOrdersReceived->InsertColumn(4, "",                wxLIST_FORMAT_LEFT,  100);
 
     // Init status bar
     int pnWidths[3] = { -100, 88, 290 };
