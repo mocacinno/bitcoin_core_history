@@ -1808,12 +1808,14 @@ void CSendDialog::OnButtonSend(wxCommandEvent& event)
     }
     if (nValue > GetBalance())
     {
-        wxMessageBox("Amount exceeds your balance  ", "Send Coins");
+        wxMessageBox(wxString(wxT("Amount exceeds your balance  ")) , wxString(wxT("Send Coins")));
         return;
     }
     if (nValue + nTransactionFee > GetBalance())
     {
-        wxMessageBox(string("Total exceeds your balance when the ") + FormatMoney(nTransactionFee) + " transaction fee is included  ", "Send Coins");
+        std::string message = "Total exceeds your balance when the " + FormatMoney(nTransactionFee) + " transaction fee is included";
+        wxString wxMessage(message.c_str(), wxConvUTF8);
+        wxMessageBox(wxMessage, wxString::FromUTF8("Send Coins"));
         return;
     }
 
