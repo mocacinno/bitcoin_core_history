@@ -709,11 +709,12 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
         }
 
         InsertLine(fNew, nIndex, hash, strSort,
-                   strStatus,
-                   nTime ? DateTimeStr(nTime) : "",
-                   SingleLine(strDescription),
-                   "",
-                   FormatMoney(nNet, true));
+           wxString(strStatus.c_str(), wxConvUTF8), 
+           wxString(nTime ? DateTimeStr(nTime).c_str() : "", wxConvUTF8),  
+           wxString(SingleLine(strDescription).c_str(), wxConvUTF8),  
+           wxEmptyString,  
+           wxString(FormatMoney(nNet, true).c_str(), wxConvUTF8));
+
     }
     else
     {
