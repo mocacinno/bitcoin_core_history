@@ -3335,7 +3335,10 @@ void CMyTaskBarIcon::Show(bool fShow)
 #ifdef __WXMSW__
             SetIcon(wxICON(bitcoin), strTooltip);
 #else
-            SetIcon(bitcoin20_xpm, strTooltip);
+            wxBitmap bitmap(bitcoin20_xpm);
+            wxIcon icon;
+            icon.CopyFromBitmap(bitmap);
+            SetIcon(icon, wxString(strTooltip.c_str(), wxConvUTF8));
 #endif
         }
     }
