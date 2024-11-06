@@ -2545,7 +2545,7 @@ CProductsDialog::CProductsDialog(wxWindow* parent) : CProductsDialogBase(parent)
     // Fill categories combo box
     int nLimit = 250;
     for (vector<pair<int, string> >::iterator it = vTopCategories.begin(); it != vTopCategories.end() && nLimit-- > 0; ++it)
-        m_comboBoxCategory->Append((*it).second);
+        m_comboBoxCategory->Append(wxString((*it).second.c_str(), wxConvUTF8));
 
     // Fill window with initial search
     //wxCommandEvent event;
@@ -2564,8 +2564,8 @@ bool CompareProductsBestFirst(const CProduct* p1, const CProduct* p2)
 
 void CProductsDialog::OnButtonSearch(wxCommandEvent& event)
 {
-    string strCategory = (string)m_comboBoxCategory->GetValue();
-    string strSearch = (string)m_textCtrlSearch->GetValue();
+    std::string strCategory = std::string(m_comboBoxCategory->GetValue().mb_str());
+    std::string strSearch = std::string(m_textCtrlSearch->GetValue().mb_str());
 
     // Search products
     vector<CProduct*> vProductsFound;
@@ -2592,12 +2592,14 @@ void CProductsDialog::OnButtonSearch(wxCommandEvent& event)
     // Display
     foreach(CProduct* pproduct, vProductsFound)
     {
-        InsertLine(m_listCtrl,
-                   pproduct->mapValue["title"],
-                   pproduct->mapValue["price"],
-                   pproduct->mapValue["seller"],
-                   pproduct->mapValue["stars"],
-                   itostr(pproduct->nAtoms));
+    InsertLine(
+        m_listCtrl,
+        wxString::FromAscii(pproduct->mapValue["title"].c_str()),
+        wxString::FromAscii(pproduct->mapValue["price"].c_str()), 
+        wxString::FromAscii(pproduct->mapValue["seller"].c_str()), 
+        wxString::FromAscii(pproduct->mapValue["stars"].c_str()), 
+        wxString::FromAscii(itostr(pproduct->nAtoms).c_str()) 
+    );
     }
 }
 
