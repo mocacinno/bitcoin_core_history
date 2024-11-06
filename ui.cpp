@@ -3038,14 +3038,14 @@ void CViewProductDialog::UpdateProductDisplay(bool fDetails)
     // Shrink capacity to fit
     string(strHTML.begin(), strHTML.end()).swap(strHTML);
 
-    m_htmlWinReviews->SetPage(strHTML);
+    m_htmlWinReviews->SetPage(wxString(strHTML.c_str(), wxConvUTF8));
 
     ///// need to find some other indicator to use so can allow empty order form
     if (product.vOrderForm.empty())
         return;
 
     // Order form
-    m_staticTextInstructions->SetLabel(product.mapValue["instructions"]);
+    m_staticTextInstructions->SetLabel(wxString::FromAscii(product.mapValue["instructions"].c_str()));
     for (int i = 0; i < FIELDS_MAX; i++)
     {
         m_staticTextLabel[i] = NULL;
@@ -3071,7 +3071,7 @@ void CViewProductDialog::UpdateProductDisplay(bool fDetails)
         if (strLabel.size() < 20)
             strLabel.insert(strLabel.begin(), 20 - strLabel.size(), ' ');
 
-        m_staticTextLabel[i] = new wxStaticText(m_scrolledWindow, wxID_ANY, strLabel, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+        m_staticTextLabel[i] = new wxStaticText(m_scrolledWindow, wxID_ANY, wxString(strLabel.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
         m_staticTextLabel[i]->Wrap(-1);
         fgSizer->Add(m_staticTextLabel[i], 0, wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT|wxALL, 5);
 
@@ -3088,7 +3088,7 @@ void CViewProductDialog::UpdateProductDisplay(bool fDetails)
 
             wxArrayString arraystring;
             foreach(const string& str, vChoices)
-                arraystring.Add(str);
+                arraystring.Add(wxString(str.c_str(), wxConvUTF8));
 
             m_choiceField[i] = new wxChoice(m_scrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, arraystring, 0);
             fgSizer->Add(m_choiceField[i], 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
@@ -3224,7 +3224,7 @@ CViewOrderDialog::CViewOrderDialog(wxWindow* parent, CWalletTx order, bool fRece
     // (strings are ref counted, so it may live on in SetPage)
     string(strHTML.begin(), strHTML.end()).swap(strHTML);
 
-    m_htmlWin->SetPage(strHTML);
+    m_htmlWin->SetPage(wxString(strHTML.c_str(), wxConvUTF8));
 }
 
 void CViewOrderDialog::OnButtonOK(wxCommandEvent& event)
@@ -3251,7 +3251,7 @@ void CEditReviewDialog::OnButtonSubmit(wxCommandEvent& event)
 {
     if (m_choiceStars->GetSelection() == -1)
     {
-        wxMessageBox("Please select a rating  ");
+        wxMessageBox(wxString("Please select a rating  ", wxConvUTF8));
         return;
     }
 
@@ -3262,14 +3262,14 @@ void CEditReviewDialog::OnButtonSubmit(wxCommandEvent& event)
     review.vchPubKeyFrom = keyUser.GetPubKey();
     if (!keyUser.Sign(review.GetSigHash(), review.vchSig))
     {
-        wxMessageBox("Unable to digitally sign the review  ");
+        wxMessageBox(wxString("Unable to digitally sign the review  ", wxConvUTF8));
         return;
     }
 
     // Broadcast
     if (!review.AcceptReview())
     {
-        wxMessageBox("Save failed  ");
+        wxMessageBox(wxString("Save failed  ", wxConvUTF8));
         return;
     }
     RelayMessage(CInv(MSG_REVIEW, review.GetHash()), review);
