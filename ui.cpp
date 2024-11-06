@@ -804,11 +804,11 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
                 fAllMine = fAllMine && txin.IsMine();
 
             InsertLine(fNew, nIndex, hash, strSort,
-                       strStatus,
-                       nTime ? DateTimeStr(nTime) : "",
-                       "",
-                       FormatMoney(nNet, true),
-                       "");
+                       wxString(strStatus.c_str(), wxConvUTF8),
+                       wxString(nTime ? DateTimeStr(nTime).c_str() : "", wxConvUTF8),
+                       wxString(),
+                       wxString(FormatMoney(nNet, true).c_str(), wxConvUTF8));
+                       wxString());
         }
     }
 
