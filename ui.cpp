@@ -177,16 +177,16 @@ void AddToMyProducts(CProduct product)
     CProduct& productInsert = mapMyProducts[product.GetHash()];
     productInsert = product;
     InsertLine(pframeMain->m_listCtrlProductsSent, &productInsert,
-                product.mapValue["category"],
-                product.mapValue["title"].substr(0, 100),
-                product.mapValue["description"].substr(0, 100),
-                product.mapValue["price"],
-                "");
+            wxString(product.mapValue["category"].c_str(), wxConvUTF8),
+            wxString(product.mapValue["title"].substr(0, 100).c_str(), wxConvUTF8),
+            wxString(product.mapValue["description"].substr(0, 100).c_str(), wxConvUTF8),
+            wxString(product.mapValue["price"].c_str(), wxConvUTF8),
+            wxEmptyString);  // Empty wxString
 }
 
-void CalledMessageBox(const string& message, const string& caption, int style, wxWindow* parent, int x, int y, int* pnRet, bool* pfDone)
+void CalledMessageBox(const std::string& message, const std::string& caption, int style, wxWindow* parent, int x, int y, int* pnRet, bool* pfDone)
 {
-    *pnRet = wxMessageBox(message, caption, style, parent, x, y);
+    *pnRet = wxMessageBox(wxString(message.c_str(), wxConvUTF8), wxString(caption.c_str(), wxConvUTF8), style, parent, x, y);
     *pfDone = true;
 }
 
