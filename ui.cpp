@@ -1832,7 +1832,7 @@ void CSendDialog::OnButtonSend(wxCommandEvent& event)
         if (!SendMoney(scriptPubKey, nValue, wtx))
             return;
 
-        wxMessageBox("Payment sent  ", "Sending...");
+        wxMessageBox(wxString(wxT("Payment sent  ")), wxString(wxT("Sending...")));
     }
     else
     {
@@ -1840,14 +1840,14 @@ void CSendDialog::OnButtonSend(wxCommandEvent& event)
         CAddress addr(strAddress);
         if (!addr.IsValid())
         {
-            wxMessageBox("Invalid address  ", "Send Coins");
+            wxMessageBox(wxString(wxT("Invalid address  ")), wxString(wxT("Send Coins")));
             return;
         }
 
         // Message
         wtx.mapValue["to"] = strAddress;
-        wtx.mapValue["from"] = m_textCtrlFrom->GetValue();
-        wtx.mapValue["message"] = m_textCtrlMessage->GetValue();
+        wtx.mapValue["from"] = m_textCtrlFrom->GetValue().mb_str();
+        wtx.mapValue["message"] = m_textCtrlMessage->GetValue().mb_str();
 
         // Send to IP address
         CSendingDialog* pdialog = new CSendingDialog(this, addr, nValue, wtx);
