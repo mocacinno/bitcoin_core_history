@@ -197,7 +197,7 @@ int ThreadSafeMessageBox(const string& message, const string& caption, int style
 #else
     if (wxThread::IsMain())
     {
-        return wxMessageBox(message, caption, style, parent, x, y);
+        return wxMessageBox(wxString(message.c_str(), wxConvUTF8), wxString(caption.c_str(), wxConvUTF8), style, parent, x, y);
     }
     else
     {
@@ -294,7 +294,7 @@ void AddPendingReplyEvent3(void* pevthandler, CDataStream& vRecv)
 CDataStream GetStreamFromEvent(const wxCommandEvent& event)
 {
     wxString strData = event.GetString();
-    const char* pszBegin = strData.c_str();
+    const char* pszBegin = strData.mb_str(wxConvUTF8);
     return CDataStream(pszBegin, pszBegin + event.GetInt(), SER_NETWORK);
 }
 
