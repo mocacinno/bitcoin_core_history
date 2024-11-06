@@ -1,0 +1,53 @@
+# Copyright (c) 2009 Satoshi Nakamoto
+# Distributed under the MIT/X11 software license, see the accompanying
+# file license.txt or http://www.opensource.org/licenses/mit-license.php.
+
+ifneq ($(BUILD), debug)
+ifneq ($(BUILD), release)
+BUILD = debug
+endif
+endif
+ifeq ($(BUILD), debug)
+D = ud
+DEBUGFLAGS = -g -D__WXDEBUG__
+endif
+
+INCLUDEPATHS = \
+ -I/usr/include \
+ -I/usr/local/include/wx-2.8 \
+ -I/usr/local/lib/wx/include/gtk2-unicode-debug-2.8
+
+LIBPATHS = \
+ -L/usr/lib \
+ -L/usr/local/lib \
+ -L/usr/local/wxwidgets/lib \
+ -L/wxWidgets-2.8.9/lib
+
+LIBS = \
+ -Wl,-Bstatic \
+   -lboost_system -lboost_filesystem -ldb_cxx \
+ -Wl,-Bdynamic \
+   -lwx_gtk2$(D)-2.8 -lcrypto -lgtk-x11-2.0 -lgthread-2.0 -lSM
+
+WXDEFS = -D__WXGTK__ -DNOPCH
+CFLAGS = -O0 -Wno-invalid-offsetof -Wformat $(DEBUGFLAGS) $(WXDEFS) $(INCLUDEPATHS)
+HEADERS = headers.h util.h main.h serialize.h uint256.h key.h bignum.h script.h db.h base58.h
+
+OBJS = obj/util.o obj/script.o obj/db.o obj/net.o obj/main.o obj/market.o \
+       obj/ui.o obj/uibase.o obj/sha.o obj/irc.o
+
+# Compile header precompiled file
+headers.h.gch: headers.h $(HEADERS) net.h irc.h market.h uibase.h ui.h
+	g++ -c $(CFLAGS) -o $@ $<
+
+# Compile object files
+obj/%.o: %.cpp $(HEADERS)
+	g++ -c $(CFLAGS) -o $@ $<
+
+# Link the final executable
+bitcoin: headers.h.gch $(OBJS)
+	g++ $(CFLAGS) -o $@ $(OBJS) $(LIBPATHS) $(LIBS)
+
+# Clean the project
+clean:
+	-rm -f obj/*.o headers.h.gch bitcoin
