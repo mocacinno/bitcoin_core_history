@@ -2491,7 +2491,7 @@ void CAddressBookDialog::OnButtonCopy(wxCommandEvent& event)
 void CAddressBookDialog::OnButtonOK(wxCommandEvent& event)
 {
     // OK
-    EndModal(GetAddress() != "" ? 1 : 0);
+    EndModal(GetAddress() != wxEmptyString ? 1 : 0);
 }
 
 void CAddressBookDialog::OnButtonCancel(wxCommandEvent& event)
@@ -2524,11 +2524,11 @@ bool CompareIntStringPairBestFirst(const pair<int, string>& item1, const pair<in
 CProductsDialog::CProductsDialog(wxWindow* parent) : CProductsDialogBase(parent)
 {
     // Init column headers
-    m_listCtrl->InsertColumn(0, "Title",  wxLIST_FORMAT_LEFT, 200);
-    m_listCtrl->InsertColumn(1, "Price",  wxLIST_FORMAT_LEFT, 80);
-    m_listCtrl->InsertColumn(2, "Seller", wxLIST_FORMAT_LEFT, 80);
-    m_listCtrl->InsertColumn(3, "Stars",  wxLIST_FORMAT_LEFT, 50);
-    m_listCtrl->InsertColumn(4, "Power",  wxLIST_FORMAT_LEFT, 50);
+    m_listCtrl->InsertColumn(0, wxString("Title", wxConvUTF8),  wxLIST_FORMAT_LEFT, 200);
+    m_listCtrl->InsertColumn(1, wxString("Price", wxConvUTF8),  wxLIST_FORMAT_LEFT, 80);
+    m_listCtrl->InsertColumn(2, wxString("Seller", wxConvUTF8), wxLIST_FORMAT_LEFT, 80);
+    m_listCtrl->InsertColumn(3, wxString("Stars", wxConvUTF8),  wxLIST_FORMAT_LEFT, 50);
+    m_listCtrl->InsertColumn(4, wxString("Power", wxConvUTF8),  wxLIST_FORMAT_LEFT, 50);
 
     // Tally top categories
     map<string, int> mapTopCategories;
