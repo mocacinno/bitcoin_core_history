@@ -731,11 +731,11 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
             // Payment to self
             int64 nValue = wtx.vout[0].nValue;
             InsertLine(fNew, nIndex, hash, strSort,
-                       strStatus,
-                       nTime ? DateTimeStr(nTime) : "",
-                       "Payment to yourself",
-                       "",
-                       "");
+                       wxString(strStatus.c_str(), wxConvUTF8),
+                       wxString(nTime ? DateTimeStr(nTime).c_str() : "", wxConvUTF8),
+                       wxString("Payment to yourself", wxConvUTF8),
+                       wxEmptyString,
+                       wxEmptyString);
             /// issue: can't tell which is the payment and which is the change anymore
             //           FormatMoney(nNet - nValue, true),
             //           FormatMoney(nValue, true));
@@ -781,13 +781,14 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
                 int64 nValue = txout.nValue;
                 if (nOut == 0 && nTxFee > 0)
                     nValue += nTxFee;
-
-                InsertLine(fNew, nIndex, hash, strprintf("%s-%d", strSort.c_str(), nOut),
-                           strStatus,
-                           nTime ? DateTimeStr(nTime) : "",
-                           SingleLine(strDescription),
-                           FormatMoney(-nValue, true),
-                           "");
+                
+                InsertLine(fNew, nIndex, hash, 
+                    strprintf("%s-%d", strSort.c_str(), nOut),  
+                    wxString(strStatus.c_str(), wxConvUTF8),  g
+                    nTime ? wxString(DateTimeStr(nTime).c_str(), wxConvUTF8) : wxString(),  
+                    wxString(SingleLine(strDescription).c_str(), wxConvUTF8),  
+                    wxString(FormatMoney(-nValue, true).c_str(), wxConvUTF8),  
+                    wxString());  
                 wtx.nLinesDisplayed++;
             }
         }
