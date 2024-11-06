@@ -433,9 +433,20 @@ public:
     }
 
     // Custom
-    string GetValue()  { return (string)m_textCtrl1->GetValue(); }
-    string GetValue1() { return (string)m_textCtrl1->GetValue(); }
-    string GetValue2() { return (string)m_textCtrl2->GetValue(); }
+    std::string GetValue() {
+                wxString value = m_textCtrl1->GetValue();
+                return std::string(value.mb_str());
+        }
+
+    std::string GetValue1() {
+		wxString value = m_textCtrl1->GetValue();
+		return std::string(value.mb_str());
+	}
+
+    std::string GetValue2() {
+    		wxString value = m_textCtrl2->GetValue();
+		return std::string(value.mb_str()); // Use mb_str() for conversion
+	}
 };
 
 
