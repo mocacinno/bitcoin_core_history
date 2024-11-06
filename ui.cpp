@@ -2740,8 +2740,8 @@ void CEditProductDialog::OnButtonDel(wxCommandEvent& event, int n)
         if (!m_buttonDel[i+1]->IsShown())
             break;
     }
-    m_textCtrlLabel[i]->SetValue("");
-    m_textCtrlField[i]->SetValue("");
+    m_textCtrlLabel[i]->SetValue(wxString());
+    m_textCtrlField[i]->SetValue(wxString());
     ShowLine(i, false);
     m_buttonAddField->Enable(true);
     LayoutAll();
@@ -2776,7 +2776,7 @@ void CEditProductDialog::OnButtonSend(wxCommandEvent& event)
     product.vchPubKeyFrom = keyUser.GetPubKey();
     if (!keyUser.Sign(product.GetSigHash(), product.vchSig))
     {
-        wxMessageBox("Error digitally signing the product  ");
+        wxMessageBox(wxString("Error digitally signing the product  ", wxConvUTF8));
         return;
     }
 
@@ -2790,14 +2790,14 @@ void CEditProductDialog::OnButtonSend(wxCommandEvent& event)
     // Sign the summary product
     if (!keyUser.Sign(product.GetSigHash(), product.vchSig))
     {
-        wxMessageBox("Error digitally signing the product  ");
+        wxMessageBox(wxString("Error digitally signing the product  ", wxConvUTF8));
         return;
     }
 
     // Verify
     if (!product.CheckProduct())
     {
-        wxMessageBox("Errors found in product  ");
+        wxMessageBox(wxString("Errors found in product  ", wxConvUTF8));
         return;
     }
 
