@@ -807,7 +807,7 @@ bool CMainFrame::InsertTransaction(const CWalletTx& wtx, bool fNew, int nIndex)
                        wxString(strStatus.c_str(), wxConvUTF8),
                        wxString(nTime ? DateTimeStr(nTime).c_str() : "", wxConvUTF8),
                        wxString(),
-                       wxString(FormatMoney(nNet, true).c_str(), wxConvUTF8));
+                       wxString(FormatMoney(nNet, true).c_str(), wxConvUTF8),
                        wxString());
         }
     }
