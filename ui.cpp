@@ -3404,12 +3404,12 @@ void CMyTaskBarIcon::UpdateTooltip()
 wxMenu* CMyTaskBarIcon::CreatePopupMenu()
 {
     wxMenu* pmenu = new wxMenu;
-    pmenu->Append(ID_TASKBAR_RESTORE, "&Open Bitcoin");
-    pmenu->Append(ID_TASKBAR_OPTIONS, "O&ptions...");
-    pmenu->AppendCheckItem(ID_TASKBAR_GENERATE, "&Generate Coins")->Check(fGenerateBitcoins);
+    pmenu->Append(ID_TASKBAR_RESTORE, wxString("&Open Bitcoin", wxConvUTF8));
+    pmenu->Append(ID_TASKBAR_OPTIONS, wxString("O&ptions...", wxConvUTF8));
+    pmenu->AppendCheckItem(ID_TASKBAR_GENERATE, wxString("&Generate Coins", wxConvUTF8))->Check(fGenerateBitcoins);
 #ifndef __WXMAC_OSX__ // Mac has built-in quit menu
     pmenu->AppendSeparator();
-    pmenu->Append(ID_TASKBAR_EXIT, "E&xit");
+    pmenu->Append(ID_TASKBAR_EXIT, wxString("E&xit", wxConvUTF8));
 #endif
     return pmenu;
 }
@@ -3485,7 +3485,7 @@ bool CMyApp::OnInit2()
 #ifdef __WXMSW__
     SetAppName("Bitcoin");
 #else
-    SetAppName("bitcoin");
+    SetAppName(wxString("bitcoin", wxConvUTF8));
     umask(077);
 #endif
 
