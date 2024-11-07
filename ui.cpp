@@ -1679,8 +1679,10 @@ CAboutDialog::CAboutDialog(wxWindow* parent) : CAboutDialogBase(parent)
 
     // Workaround until upgrade to wxWidgets supporting UTF-8
     wxString str = m_staticTextMain->GetLabel();
-    if (str.Find('�') != wxNOT_FOUND)
-        str.Remove(str.Find('�'), 1);
+    wxString specialChar = wxT("�");
+    if (str.Find(specialChar) != wxNOT_FOUND)
+        str.Remove(str.Find(specialChar), 1);
+
     m_staticTextMain->SetLabel(str);
 #ifndef __WXMSW__
     SetSize(510, 380);
@@ -2855,11 +2857,11 @@ void CEditProductDialog::GetProduct(CProduct& product)
     // map<string, string> mapValue;
     // vector<pair<string, string> > vOrderForm;
 
-    product.mapValue["category"]     = m_comboBoxCategory->GetValue().Trim();
-    product.mapValue["title"]        = m_textCtrlTitle->GetValue().Trim();
-    product.mapValue["price"]        = m_textCtrlPrice->GetValue().Trim();
-    product.mapValue["description"]  = m_textCtrlDescription->GetValue().Trim();
-    product.mapValue["instructions"] = m_textCtrlInstructions->GetValue().Trim();
+    product.mapValue["category"]     = std::string(m_comboBoxCategory->GetValue().ToUTF8().data());
+    product.mapValue["title"]        = std::string(m_textCtrlTitle->GetValue().ToUTF8().data());
+    product.mapValue["price"]        = std::string(m_textCtrlPrice->GetValue().ToUTF8().data());
+    product.mapValue["description"]  = std::string(m_textCtrlDescription->GetValue().ToUTF8().data());
+    product.mapValue["instructions"] = std::string(m_textCtrlInstructions->GetValue().ToUTF8().data());
 
     for (int i = 0; i < FIELDS_MAX; i++)
     {
@@ -3539,7 +3541,7 @@ bool CMyApp::OnInit2()
     if (!fDebug && !pszSetDataDir[0])
         ShrinkDebugFile();
     printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    printf("Bitcoin version %d%s, OS version %s\n", VERSION, pszSubVer, wxGetOsDescription().mb_str());
+    printf("Bitcoin version %d%s, OS version %s\n", VERSION, pszSubVer, wxGetOsDescription().mb_str().data());
 
     if (mapArgs.count("-loadblockindextest"))
     {
