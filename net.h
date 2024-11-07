@@ -677,7 +677,9 @@ public:
 
         // Patch in the size
         unsigned int nSize = vSend.size() - nPushPos - sizeof(CMessageHeader);
-        memcpy((char*)&vSend[nPushPos] + offsetof(CMessageHeader, nMessageSize), &nSize, sizeof(nSize));
+        CMessageHeader tempHeader;
+        size_t offset = reinterpret_cast<char*>(&tempHeader.nMessageSize) - reinterpret_cast<char*>(&tempHeader);
+        memcpy((char*)&vSend[nPushPos] + offset, &nSize, sizeof(nSize));
 
         printf("(%d bytes) ", nSize);
         printf("\n");
@@ -701,7 +703,9 @@ public:
     {
         if (nPushPos == -1)
             return "";
-        return &vSend[nPushPos] + offsetof(CMessageHeader, pchCommand);
+        const CMessageHeader tempHeader;
+        size_t offset = reinterpret_cast<const char*>(&tempHeader.pchCommand) - reinterpret_cast<const char*>(&tempHeader);
+        return &vSend[nPushPos] + offset;
     }
 
 
